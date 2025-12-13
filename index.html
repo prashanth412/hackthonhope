@@ -341,7 +341,7 @@
         @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         
         /* REGISTRATION MODAL */
-        .reg-modal { display: none; position: fixed; z-index: 2000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); overflow-y: auto; align-items: center; justify-content: center; padding: 20px; }
+        .reg-modal { display: none; position: fixed; z-index: 20000; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.9); overflow-y: auto; align-items: center; justify-content: center; padding: 20px; }
         .reg-modal-content { background: #111; border: 1px solid #ff6500; border-radius: 12px; width: 100%; max-width: 600px; padding: 0; position: relative; box-shadow: 0 0 30px rgba(255, 101, 0, 0.2); animation: fadeInScale 0.3s ease-out; }
         @keyframes fadeInScale { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         .reg-header { padding: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.1); display: flex; justify-content: space-between; align-items: center; }
@@ -1448,10 +1448,10 @@
             </div>
             <div class="reg-body">
                 <form id="hackathonForm" onsubmit="handleRegistration(event)">
-                    <div class="form-group"><label class="form-label">Full Name <span>*</span></label><input type="text" class="form-input" placeholder="Enter your full name" required></div>
-                    <div class="form-group"><label class="form-label">College/Corporate Email Address <span>*</span></label><input type="email" class="form-input" placeholder="Enter your college or corporate email" required></div>
-                    <div class="form-group"><label class="form-label">Team Members (Names & Emails)</label><textarea class="form-input h-24" placeholder="Enter names and emails for any team members (e.g., Jane Doe: jane@corp.com, Ali Khan: ali@college.edu)"></textarea><p class="text-xs text-gray-500 mt-2">A maximum of 4 members per team (including yourself) is allowed.</p></div>
-                    <div class="form-group"><label class="form-label">Photo of College/Company ID & Masked Aadhaar (Max 5MB) <span>*</span></label><input type="file" id="idProof" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="form-input" required onchange="validateFileSize(this)"><p id="fileError" class="text-red-500 text-sm mt-2 hidden">File size exceeds 5MB limit. Please upload a smaller file.</p></div>
+                    <div class="form-group"><label class="form-label">Full Name <span>*</span></label><input type="text"  name="name" class="form-input" placeholder="Enter your full name" required></div>
+                    <div class="form-group"><label class="form-label">College/Corporate Email Address <span>*</span></label><input type="email" name="email" class="form-input" placeholder="Enter your college or corporate email" required></div>
+                    <div class="form-group"><label class="form-label">Team Members (Names & Emails)</label><textarea name="team" class="form-input h-24" placeholder="Enter names and emails for any team members (e.g., Jane Doe: jane@corp.com, Ali Khan: ali@college.edu)"></textarea><p class="text-xs text-gray-500 mt-2">A maximum of 4 members per team (including yourself) is allowed.</p></div>
+                    <div class="form-group"><label class="form-label">Photo of College/Company ID & Masked Aadhaar (Max 5MB) </label><input type="file" id="idProof" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" class="form-input"  onchange="validateFileSize(this)"><p id="fileError" class="text-red-500 text-sm mt-2 hidden">File size exceeds 5MB limit. Please upload a smaller file.</p></div>
                     <button type="submit" id="submitBtn" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg transition-all transform hover:scale-[1.02]">Submit Pre-Registration</button>
                 </form>
                 <div id="successMessage" class="hidden text-center py-10"><div class="text-6xl mb-4">🎉</div><h3 class="text-2xl font-bold text-white mb-2">Thank You for Pre-Registering!</h3><p class="text-gray-400">We have received your **pre-registration**. We will contact you with the link to the official hackathon platform soon!</p><button onclick="closeRegisterModal()" class="mt-8 px-6 py-2 border border-orange-400 text-orange-400 rounded-full hover:bg-orange-400 hover:text-white transition">Close</button></div>
@@ -1460,6 +1460,7 @@
     </div>
 
     <script>
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0EHDXoRA5fi-agmZAMdYpDfU60SN26Kw0rDOfuzc-Kv5TgC7sXVt0gpD9XeWuzkxhQ/exec";
         // Create floating particles for speakers section
         const speakersParticleContainer = document.getElementById('speakersParticleContainer');
         if (speakersParticleContainer) {
@@ -1597,7 +1598,92 @@
         function openRegisterModal() { document.getElementById('registerModal').style.display = 'flex'; }
         function closeRegisterModal() { document.getElementById('registerModal').style.display = 'none'; }
         function validateFileSize(input) { if (!input.files.length) return; const fileSize = input.files[0].size / 1024 / 1024; const errorMsg = document.getElementById('fileError'); const submitBtn = document.getElementById('submitBtn'); if (fileSize > 5) { errorMsg.classList.remove('hidden'); input.value = ""; submitBtn.disabled = true; submitBtn.classList.add('opacity-50', 'cursor-not-allowed'); } else { errorMsg.classList.add('hidden'); submitBtn.disabled = false; submitBtn.classList.remove('opacity-50', 'cursor-not-allowed'); } }
-        function handleRegistration(e) { e.preventDefault(); const btn = e.target.querySelector('button[type="submit"]'); if (btn.disabled) return; const originalText = btn.textContent; btn.textContent = 'Submitting...'; btn.disabled = true; const formData = new FormData(e.target); const data = {}; for (let [key, value] of formData.entries()) { if (key !== 'idProof') data[key] = value; } setTimeout(() => { document.getElementById('hackathonForm').classList.add('hidden'); document.getElementById('successMessage').classList.remove('hidden'); btn.textContent = originalText; btn.disabled = false; }, 1500); }
+
+        // function handleRegistration(e) { 
+        //     e.preventDefault(); 
+        //     const btn = e.target.querySelector('button[type="submit"]'); 
+        //         if (btn.disabled) 
+        //         return; 
+        //     const originalText = btn.textContent; btn.textContent = 'Submitting...'; 
+        //         btn.disabled = true; 
+        //     const formData = new FormData(e.target); const data = {}; 
+        //         for (let [key, value] of formData.entries()) 
+        //         { if (key !== 'idProof') data[key] = value; } 
+        //         setTimeout(() => { document.getElementById('hackathonForm').classList.add('hidden'); 
+        //             document.getElementById('successMessage').classList.remove('hidden'); 
+        //             btn.textContent = originalText; btn.disabled = false; }, 1500
+        //         ); 
+        // }
+//         function handleRegistration(e) {
+//   e.preventDefault();
+
+//   const btn = document.getElementById("submitBtn");
+//   btn.textContent = "Submitting...";
+//   btn.disabled = true;
+
+//   const form = document.getElementById("hackathonForm");
+
+//   const payload = {
+//     name: form.name.value,
+//     email: form.email.value,
+//     team: form.querySelector("textarea").value || ""
+//   };
+
+//   fetch(SCRIPT_URL, {
+//     method: "POST",
+//     headers: { "Content-Type": "application/json" },
+//     body: JSON.stringify(payload)
+//   })
+//   .then(res => res.json())
+//   .then(data => {
+//     if (data.success) {
+//       form.classList.add("hidden");
+//       document.getElementById("successMessage").classList.remove("hidden");
+//     } else {
+//       alert("Submission failed");
+//     }
+//   })
+//   .catch(() => alert("Network error"))
+//   .finally(() => {
+//     btn.textContent = "Submit Pre-Registration";
+//     btn.disabled = false;
+//   });
+// }
+
+function handleRegistration(e) {
+  e.preventDefault();
+
+  const btn = document.getElementById("submitBtn");
+  btn.textContent = "Submitting...";
+  btn.disabled = true;
+
+  const form = document.getElementById("hackathonForm");
+
+  const formData = new FormData();
+  formData.append("name", form.name.value);
+  formData.append("email", form.email.value);
+  formData.append("team", form.querySelector("textarea").value || "");
+
+  fetch(SCRIPT_URL, {
+    method: "POST",
+    body: formData  
+  })
+  .then(res => res.text())
+  .then(() => {
+    form.classList.add("hidden");
+    document.getElementById("successMessage").classList.remove("hidden");
+  })
+  .catch(err => {
+    console.error(err);
+    alert("Submission failed. Please try again.");
+  })
+  .finally(() => {
+    btn.textContent = "Submit Pre-Registration";
+    btn.disabled = false;
+  });
+}
+
+
         window.onclick = function(event) { const regModal = document.getElementById('registerModal'); if (event.target == regModal) { closeRegisterModal(); } const modals = document.querySelectorAll('.modal'); modals.forEach(modal => { if (event.target === modal) modal.style.display = 'none'; }); }
         const countdownTimer = document.getElementById('countdownTimer'); if (countdownTimer) { const countdownTargets = { days: document.getElementById('countdownDays'), hours: document.getElementById('countdownHours'), minutes: document.getElementById('countdownMinutes'), seconds: document.getElementById('countdownSeconds'), }; const eventDate = new Date('2026-01-24T09:00:00+05:30').getTime(); let countdownInterval; const updateCountdown = () => { const now = Date.now(); let distance = eventDate - now; if (distance <= 0) { distance = 0; if (countdownInterval) clearInterval(countdownInterval); } const days = Math.floor(distance / (1000 * 60 * 60 * 24)); const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)); const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60)); const seconds = Math.floor((distance % (1000 * 60)) / 1000); countdownTargets.days.textContent = String(days).padStart(2, '0'); countdownTargets.hours.textContent = String(hours).padStart(2, '0'); countdownTargets.minutes.textContent = String(minutes).padStart(2, '0'); countdownTargets.seconds.textContent = String(seconds).padStart(2, '0'); }; updateCountdown(); countdownInterval = setInterval(updateCountdown, 1000); }
         const infoCards = document.querySelectorAll('.info-card'); const aboutObserver = 'IntersectionObserver' in window ? new IntersectionObserver(entries => { entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); }); }, { threshold: 0.2 }) : null; if (aboutObserver) { infoCards.forEach(card => aboutObserver.observe(card)); } else { infoCards.forEach(card => card.classList.add('visible')); }
