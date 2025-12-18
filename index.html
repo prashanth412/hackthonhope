@@ -1460,7 +1460,8 @@
     </div>
 
     <script>
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwf0EHDXoRA5fi-agmZAMdYpDfU60SN26Kw0rDOfuzc-Kv5TgC7sXVt0gpD9XeWuzkxhQ/exec";
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbzpc4zHLJTTUPd2CUKiuITxfCWsps-ggYW1326pRxJH32-dx9xFNcUhrIdIzQZrTNf2/exec";
+        
         // Create floating particles for speakers section
         const speakersParticleContainer = document.getElementById('speakersParticleContainer');
         if (speakersParticleContainer) {
@@ -1650,38 +1651,77 @@
 //   });
 // }
 
+// function handleRegistration(e) {
+//   e.preventDefault();
+
+//   const btn = document.getElementById("submitBtn");
+//   btn.textContent = "Submitting...";
+//   btn.disabled = true;
+
+//   const form = document.getElementById("hackathonForm");
+
+//   const formData = new FormData();
+//   formData.append("name", form.name.value);
+//   formData.append("email", form.email.value);
+//   formData.append("team", form.querySelector("textarea").value || "");
+
+//   fetch(SCRIPT_URL, {
+//     method: "POST",
+//     body: formData  
+//   })
+//   .then(res => res.text())
+//   .then(() => {
+//     form.classList.add("hidden");
+//     document.getElementById("successMessage").classList.remove("hidden");
+//   })
+//   .catch(err => {
+//     console.error(err);
+//     alert("Submission failed. Please try again.");
+//   })
+//   .finally(() => {
+//     btn.textContent = "Submit Pre-Registration";
+//     btn.disabled = false;
+//   });
+// }
+
 function handleRegistration(e) {
   e.preventDefault();
 
+  const form = document.getElementById("hackathonForm");
   const btn = document.getElementById("submitBtn");
+
+  const formData = new FormData(form);
+
   btn.textContent = "Submitting...";
   btn.disabled = true;
 
-  const form = document.getElementById("hackathonForm");
-
-  const formData = new FormData();
-  formData.append("name", form.name.value);
-  formData.append("email", form.email.value);
-  formData.append("team", form.querySelector("textarea").value || "");
-
   fetch(SCRIPT_URL, {
     method: "POST",
-    body: formData  
+    body: formData
   })
   .then(res => res.text())
-  .then(() => {
-    form.classList.add("hidden");
-    document.getElementById("successMessage").classList.remove("hidden");
+  .then(response => {
+    if (response === "success") {
+      form.classList.add("hidden");
+      document.getElementById("successMessage").classList.remove("hidden");
+    } 
+    else if (response === "duplicate") {
+      alert("This email is already registered.");
+    } 
+    else {
+      alert("Error: " + response);
+    }
   })
   .catch(err => {
-    console.error(err);
     alert("Submission failed. Please try again.");
+    console.error(err);
   })
   .finally(() => {
     btn.textContent = "Submit Pre-Registration";
     btn.disabled = false;
   });
 }
+
 
 
         window.onclick = function(event) { const regModal = document.getElementById('registerModal'); if (event.target == regModal) { closeRegisterModal(); } const modals = document.querySelectorAll('.modal'); modals.forEach(modal => { if (event.target === modal) modal.style.display = 'none'; }); }
